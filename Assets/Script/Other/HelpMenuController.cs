@@ -1,49 +1,79 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class HelpMenuController : MonoBehaviour
 {
-    public GameObject[] helpPages;  // 各ページのパネルを格納する配列
-    public Button nextButton;       // 次のページへボタン
-    public Button previousButton;   // 前のページへボタン
-    private int currentPageIndex = 0; // 現在表示中のページインデックス
+    public GameObject[] pages; // 操作説明の各ページのパネル
+    private int currentPageIndex = 0;
+
+    public GameObject titleText;
+    public GameObject startButton;
+    public GameObject helpButton;
 
     void Start()
     {
-        UpdatePage(); // 初期状態のページを表示
+        ShowPage(currentPageIndex);
     }
 
-    // 次のページに進む
-    public void ShowNextPage()
+    void Update()
     {
-        if (currentPageIndex < helpPages.Length - 1)
+        // 次のページへ進む
+        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetMouseButtonDown(1))
         {
-            currentPageIndex++;
-            UpdatePage();
+            NextPage();
+        }
+
+        // 前のページへ戻る
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetMouseButtonDown(0))
+        {
+            PreviousPage();
+        }
+
+        // 操作説明画面を閉じる
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseHelpMenu();
         }
     }
 
-    // 前のページに戻る
-    public void ShowPreviousPage()
+    // 次のページを表示する
+    void NextPage()
+    {
+        if (currentPageIndex < pages.Length - 1)
+        {
+            currentPageIndex++;
+            ShowPage(currentPageIndex);
+        }
+    }
+
+    // 前のページを表示する
+    void PreviousPage()
     {
         if (currentPageIndex > 0)
         {
             currentPageIndex--;
-            UpdatePage();
+            ShowPage(currentPageIndex);
         }
     }
 
-    // 現在のページを更新して表示
-    private void UpdatePage()
+    // 指定されたページを表示する
+    void ShowPage(int pageIndex)
     {
-        // 全てのページを非表示にしてから、現在のページのみ表示する
-        for (int i = 0; i < helpPages.Length; i++)
+        for (int i = 0; i < pages.Length; i++)
         {
-            helpPages[i].SetActive(i == currentPageIndex);
+            pages[i].SetActive(i == pageIndex);
         }
+    }
 
-        // ボタンの有効・無効を更新
-        nextButton.interactable = (currentPageIndex < helpPages.Length - 1);
-        previousButton.interactable = (currentPageIndex > 0);
+    // 操作説明画面を閉じる
+    void CloseHelpMenu()
+    {
+        // Helpオブジェクトを非表示にする、または必要に応じてシーンを切り替える
+        gameObject.SetActive(false);
+
+        titleText.SetActive(true);
+        startButton.SetActive(true);
+        helpButton.SetActive(true);
     }
 }
