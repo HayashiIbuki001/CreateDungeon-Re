@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 601912377495219145}
   - component: {fileID: 3390861034560948970}
   - component: {fileID: -7518988509231094063}
+  - component: {fileID: -6786122208252012742}
   m_Layer: 6
   m_Name: RedBlock
   m_TagString: Obstacles
@@ -161,6 +162,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 5
+--- !u!114 &-6786122208252012742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 691160824472795469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 239fda33fd6a65b43825c4e1fa615183, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2489897210767257025
 GameObject:
   m_ObjectHideFlags: 0
