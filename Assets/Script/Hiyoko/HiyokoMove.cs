@@ -30,7 +30,7 @@ public class HiyokoMove : MonoBehaviour
         _rb.velocity = new Vector2(speed * direction, _rb.velocity.y);
 
         // ‚Ð‚æ‚±‚ª“®‚¢‚Ä‚¢‚È‚¢ŽžŠÔ‚ð‘ª’è
-        if (Mathf.Abs(transform.position.x - lastPosition.x) < 0.01f)
+        if (Mathf.Abs(transform.position.x - lastPosition.x) < 0.0001f)
         {
             stuckTime += Time.deltaTime;
         }

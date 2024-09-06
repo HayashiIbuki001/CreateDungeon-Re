@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,16 +6,19 @@ using UnityEngine.Tilemaps;
 
 public class BlockPlacement : MonoBehaviour
 {
-    public GameObject[] blockPrefabs;   // ブロックのPrefabのリスト
+    public GameObject[] blockPrefabs;        // ブロックのPrefabのリスト
     public GameObject[] placementPreviewPrefabs; // 各ブロックに対応する仮のブロックPrefab
-    public Transform blockParent;       // 生成されたブロックの親オブジェクト
-    private GameObject selectedBlock;   // 現在選択されているブロック
-    public Button[] blockButtons;       // ボタンの配列
-    public Tilemap placementTilemap;     // 設置エリアとして使うTilemap
+    public Transform blockParent;            // 生成されたブロックの親オブジェクト
+    private GameObject selectedBlock;        // 現在選択されているブロック
+    public Button[] blockButtons;            // ボタンの配列
+    public Tilemap placementTilemap;          // 設置エリアとして使うTilemap
 
-    private GameObject placementPreview; // 仮のブロックのインスタンス
+    private GameObject placementPreview;     // 仮のブロックのインスタンス
     public Vector2 gridSize = new Vector2(1.0f, 1.0f); // グリッドのサイズ
     public Vector2 gridOffset = Vector2.zero; // グリッドのオフセット
+
+    public int maxBlocks = 10;               // 設置可能なブロックの最大数
+    private Queue<GameObject> placedBlocks = new Queue<GameObject>(); // 置かれたブロックを管理するキュー
 
     void Start()
     {
@@ -71,7 +73,18 @@ public class BlockPlacement : MonoBehaviour
             {
                 if (IsPositionInTilemap(snappedPosition) && CanPlaceBlock(snappedPosition))
                 {
-                    Instantiate(selectedBlock, snappedPosition, Quaternion.identity, blockParent);
+                    // 新しいブロックを生成
+                    GameObject newBlock = Instantiate(selectedBlock, snappedPosition, Quaternion.identity, blockParent);
+
+                    // 置かれたブロックをキューに追加
+                    placedBlocks.Enqueue(newBlock);
+
+                    // 最大数を超えた場合、最初に置いたブロックを削除
+                    if (placedBlocks.Count > maxBlocks)
+                    {
+                        GameObject oldBlock = placedBlocks.Dequeue(); // 最初のブロックを取り出す
+                        Destroy(oldBlock); // 取り出したブロックを削除
+                    }
                 }
             }
         }
