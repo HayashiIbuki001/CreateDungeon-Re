@@ -8,31 +8,28 @@ public class BeamController : MonoBehaviour
     public Transform beamSpawnPoint;     // ビームの発射位置
     public float beamSpeed = 10f;        // ビームの速度
     public float maxBeamDistance = 20f;  // ビームの最大距離
+    public float fireRate = 0.5f;        // ビームを発射する間隔（秒）
 
-    private GameObject currentBeam;      // 現在のビーム
-
-    void Start()
+    private void Start()
     {
-        FireBeam();  // 最初にビームを発射
+        // ビームを定期的に発射するコルーチンを開始
+        StartCoroutine(FireBeamContinuously());
     }
 
-    void Update()
+    private IEnumerator FireBeamContinuously()
     {
-        // ビームが存在しない場合、新たに発射
-        if (currentBeam == null)
+        while (true)
         {
             FireBeam();
+            yield return new WaitForSeconds(fireRate); // 指定した間隔で発射
         }
     }
 
     void FireBeam()
     {
         // ビームを生成し、初期位置と向きを設定
-        currentBeam = Instantiate(beamPrefab, beamSpawnPoint.position, beamSpawnPoint.rotation);
-
-        // 発射方向を beamSpawnPoint の向きに合わせる
-        Vector2 fireDirection = beamSpawnPoint.up; // up方向を使用する
-        currentBeam.GetComponent<Rigidbody2D>().velocity = fireDirection * beamSpeed;
+        GameObject currentBeam = Instantiate(beamPrefab, beamSpawnPoint.position, beamSpawnPoint.rotation);
+        currentBeam.GetComponent<Rigidbody2D>().velocity = beamSpawnPoint.up * beamSpeed;
 
         // 一定距離を超えたらビームを削除
         Destroy(currentBeam, maxBeamDistance / beamSpeed);

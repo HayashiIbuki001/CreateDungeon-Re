@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BeamCollision : MonoBehaviour
+public class BeamCollision : GameOverTrigger
 {
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -12,8 +12,7 @@ public class BeamCollision : MonoBehaviour
         // ビームがひよこに当たった場合、ゲームオーバー
         else if (collision.CompareTag("Player"))
         {
-            Debug.Log("ゲームオーバー");
-            // ゲームオーバー処理をここに追加
+            GameOver();
         }
     }
 }

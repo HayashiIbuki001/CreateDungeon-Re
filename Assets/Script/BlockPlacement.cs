@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
 
 public class BlockPlacement : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class BlockPlacement : MonoBehaviour
     public Transform blockParent;       // 生成されたブロックの親オブジェクト
     private GameObject selectedBlock;   // 現在選択されているブロック
     public Button[] blockButtons;       // ボタンの配列
-    public Collider2D[] placementAreas; // 設置エリアのコライダーの配列
+    public Tilemap placementTilemap;     // 設置エリアとして使うTilemap
 
     private GameObject placementPreview; // 仮のブロックのインスタンス
     public Vector2 gridSize = new Vector2(1.0f, 1.0f); // グリッドのサイズ
@@ -44,10 +45,10 @@ public class BlockPlacement : MonoBehaviour
             Vector2 snappedPosition = SnapToGrid(mousePos);
 
             // 仮のブロックを設置位置に移動
-            if (placementPreview != null)
+            if (placementPreview != null && selectedBlock != null)
             {
                 placementPreview.transform.position = snappedPosition;
-                if (IsPositionInAnyPlacementArea(snappedPosition))
+                if (IsPositionInTilemap(snappedPosition))
                 {
                     if (CanPlaceBlock(snappedPosition))
                     {
@@ -68,7 +69,7 @@ public class BlockPlacement : MonoBehaviour
             // 選択したブロックを設置する
             if (selectedBlock != null && Input.GetMouseButtonDown(0))
             {
-                if (IsPositionInAnyPlacementArea(snappedPosition) && CanPlaceBlock(snappedPosition))
+                if (IsPositionInTilemap(snappedPosition) && CanPlaceBlock(snappedPosition))
                 {
                     Instantiate(selectedBlock, snappedPosition, Quaternion.identity, blockParent);
                 }
@@ -101,17 +102,11 @@ public class BlockPlacement : MonoBehaviour
         }
     }
 
-    // ブロックが設置できるエリアにあるかチェック
-    bool IsPositionInAnyPlacementArea(Vector2 position)
+    // Tilemap内に位置があるかチェック
+    bool IsPositionInTilemap(Vector2 position)
     {
-        foreach (var area in placementAreas)
-        {
-            if (area.OverlapPoint(position))
-            {
-                return true; // 任意の設置エリアに位置が含まれている場合
-            }
-        }
-        return false; // どの設置エリアにも位置が含まれていない場合
+        Vector3Int cellPosition = placementTilemap.WorldToCell(position);
+        return placementTilemap.GetTile(cellPosition) != null;
     }
 
     // ブロックが置ける条件をチェックするメソッド
