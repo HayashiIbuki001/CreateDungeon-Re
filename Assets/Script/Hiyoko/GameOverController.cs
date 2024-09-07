@@ -1,18 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameOverController : GameOverTrigger
 {
-    public float DeadY = -10;
+    //public CheckpointManager checkpointManager; // チェックポイント管理用のスクリプト
 
-    private void Update()
-
-       
+    public override void GameOver()
     {
-        if (transform.position.y < DeadY)
+        // ゲームオーバー処理を実行
+        if (checkpointManager != null)
         {
-            GameOver();                           
+            checkpointManager.TeleportToCheckpoint();
         }
     }
 }

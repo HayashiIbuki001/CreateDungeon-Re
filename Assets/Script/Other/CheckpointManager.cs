@@ -35,7 +35,7 @@ public class CheckpointManager : MonoBehaviour
     }
 
     // チェックポイントにテレポートするメソッド
-    void TeleportToCheckpoint()
+    public void TeleportToCheckpoint()
     {
         if (checkpointPosition != Vector3.zero)
         {

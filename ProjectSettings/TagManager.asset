@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Obstacles
   - Beam
+  - Checkpoint
   layers:
   - Default
   - TransparentFX

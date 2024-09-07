@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class BeamCollision : GameOverTrigger
 {
-    void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        // ビームが障害物（ブロックや壁）に当たった場合、ビームを削除
-        if (collision.CompareTag("Obstacles"))
+        // 障害物タグに当たった場合、ビームを消去
+        if (other.CompareTag("Obstacles"))
         {
-            Destroy(gameObject); // ビームを削除
+            Destroy(gameObject); // ビームオブジェクトを削除
         }
-        // ビームがひよこに当たった場合、ゲームオーバー
-        else if (collision.CompareTag("Player"))
+        // プレイヤータグに当たった場合、ゲームオーバー処理を実行
+        else if (other.CompareTag("Player"))
         {
-            GameOver();
+            GameOver(); // GameOverTrigger から継承したゲームオーバー処理を呼び出す
         }
     }
 }

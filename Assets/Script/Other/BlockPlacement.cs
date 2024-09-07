@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -53,14 +52,6 @@ public class BlockPlacement : MonoBehaviour
                 placementPreview.transform.position = snappedPosition;
                 if (IsPositionInTilemap(snappedPosition))
                 {
-                    if (CanPlaceBlock(snappedPosition))
-                    {
-                        //placementPreview.GetComponent<SpriteRenderer>().color = Color.green; // 設置可能
-                    }
-                    else
-                    {
-                        //placementPreview.GetComponent<SpriteRenderer>().color = Color.red; // 設置不可
-                    }
                     placementPreview.SetActive(true); // 仮のブロックを表示
                 }
                 else
