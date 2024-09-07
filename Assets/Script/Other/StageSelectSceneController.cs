@@ -10,7 +10,8 @@ public class StageSelectSceneController : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-            SceneManager.LoadScene("TitleScene");
+            SceneManager.LoadScene("TitleScene" +
+                "");
         }
     }
     public void PushedButton()
