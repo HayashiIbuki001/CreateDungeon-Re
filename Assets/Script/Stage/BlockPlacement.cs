@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using UnityEngine.EventSystems; // For EventSystem
 using UnityEngine.Tilemaps;
 
 public class BlockPlacement : MonoBehaviour
@@ -39,41 +39,62 @@ public class BlockPlacement : MonoBehaviour
 
     void Update()
     {
-        // マウスクリックがUI上で行われたかどうかを判定
+        // UI上にカーソルがあるかどうかを判定
         if (!EventSystem.current.IsPointerOverGameObject())
         {
-            // マウスの位置を取得し、グリッドにスナップ
+            // 仮のブロックを表示する処理
+            HandlePlacementPreview();
+        }
+        else
+        {
+            // UI上にカーソルがある場合は仮のブロックを非表示
+            if (placementPreview != null)
+            {
+                placementPreview.SetActive(false);
+            }
+        }
+
+        // 選択したブロックを設置する処理
+        HandleBlockPlacement();
+    }
+
+    private void HandlePlacementPreview()
+    {
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 snappedPosition = SnapToGrid(mousePos);
+
+        // 仮のブロックを設置位置に移動
+        if (placementPreview != null && selectedBlock != null)
+        {
+            placementPreview.transform.position = snappedPosition;
+            if (IsPositionInTilemap(snappedPosition))
+            {
+                placementPreview.SetActive(true); // 仮のブロックを表示
+            }
+            else
+            {
+                placementPreview.SetActive(false); // 設置エリア外では非表示
+            }
+        }
+    }
+
+    private void HandleBlockPlacement()
+    {
+        if (selectedBlock != null && Input.GetMouseButtonDown(0))
+        {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 snappedPosition = SnapToGrid(mousePos);
 
-            // 仮のブロックを設置位置に移動
-            if (placementPreview != null && selectedBlock != null)
+            if (IsPositionInTilemap(snappedPosition) && CanPlaceBlock(snappedPosition))
             {
-                placementPreview.transform.position = snappedPosition;
-                if (IsPositionInTilemap(snappedPosition))
-                {
-                    placementPreview.SetActive(true); // 仮のブロックを表示
-                }
-                else
-                {
-                    placementPreview.SetActive(false); // 設置エリア外では非表示
-                }
-            }
+                GameObject newBlock = Instantiate(selectedBlock, snappedPosition, Quaternion.identity, blockParent);
+                placedBlocks.Add(newBlock);
 
-            // 選択したブロックを設置する
-            if (selectedBlock != null && Input.GetMouseButtonDown(0))
-            {
-                if (IsPositionInTilemap(snappedPosition) && CanPlaceBlock(snappedPosition))
+                // 設置するブロックの数が制限を超えた場合は古いものから消す
+                if (placedBlocks.Count > maxBlock)
                 {
-                    GameObject newBlock = Instantiate(selectedBlock, snappedPosition, Quaternion.identity, blockParent);
-                    placedBlocks.Add(newBlock);
-
-                    // 設置するブロックの数が制限を超えた場合は古いものから消す
-                    if (placedBlocks.Count > maxBlock) // 制限する数（例: 10個）
-                    {
-                        Destroy(placedBlocks[0]);
-                        placedBlocks.RemoveAt(0);
-                    }
+                    Destroy(placedBlocks[0]);
+                    placedBlocks.RemoveAt(0);
                 }
             }
         }
