@@ -39,6 +39,12 @@ public class CameraControl : MonoBehaviour
             Vector3 targetOffset = originalOffset - new Vector3(moveAmount, 0, 0);
             vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = Vector3.Lerp(currentOffset, targetOffset, Time.deltaTime * moveSpeed);
         }
+        else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            // 下矢印キーが押されているとき
+            Vector3 targetOffset = originalOffset - new Vector3(0, moveAmount, 0);  // Y軸方向に下げる
+            vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = Vector3.Lerp(currentOffset, targetOffset, Time.deltaTime * moveSpeed);
+        }
         else
         {
             // 矢印キーが押されていないときは元の位置に戻す
