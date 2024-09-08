@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems; // For EventSystem
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 
 public class BlockPlacement : MonoBehaviour
@@ -20,6 +20,10 @@ public class BlockPlacement : MonoBehaviour
 
     private List<GameObject> placedBlocks = new List<GameObject>(); // 置かれたブロックを管理
 
+    public AudioClip placementSound; // 設置時の効果音
+    public AudioClip blockSelectSound; // ブロック選択時の効果音
+    private AudioSource audioSource;  // AudioSourceコンポーネント
+
     void Start()
     {
         // UIのボタンにクリックイベントを追加
@@ -35,66 +39,51 @@ public class BlockPlacement : MonoBehaviour
             placementPreview = Instantiate(placementPreviewPrefabs[0], Vector3.zero, Quaternion.identity);
             placementPreview.SetActive(false); // 初期状態では非表示
         }
+
+        // AudioSourceコンポーネントを取得
+        audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     void Update()
     {
-        // UI上にカーソルがあるかどうかを判定
+        // マウスクリックがUI上で行われたかどうかを判定
         if (!EventSystem.current.IsPointerOverGameObject())
         {
-            // 仮のブロックを表示する処理
-            HandlePlacementPreview();
-        }
-        else
-        {
-            // UI上にカーソルがある場合は仮のブロックを非表示
-            if (placementPreview != null)
-            {
-                placementPreview.SetActive(false);
-            }
-        }
-
-        // 選択したブロックを設置する処理
-        HandleBlockPlacement();
-    }
-
-    private void HandlePlacementPreview()
-    {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 snappedPosition = SnapToGrid(mousePos);
-
-        // 仮のブロックを設置位置に移動
-        if (placementPreview != null && selectedBlock != null)
-        {
-            placementPreview.transform.position = snappedPosition;
-            if (IsPositionInTilemap(snappedPosition))
-            {
-                placementPreview.SetActive(true); // 仮のブロックを表示
-            }
-            else
-            {
-                placementPreview.SetActive(false); // 設置エリア外では非表示
-            }
-        }
-    }
-
-    private void HandleBlockPlacement()
-    {
-        if (selectedBlock != null && Input.GetMouseButtonDown(0))
-        {
+            // マウスの位置を取得し、グリッドにスナップ
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 snappedPosition = SnapToGrid(mousePos);
 
-            if (IsPositionInTilemap(snappedPosition) && CanPlaceBlock(snappedPosition))
+            // 仮のブロックを設置位置に移動
+            if (placementPreview != null && selectedBlock != null)
             {
-                GameObject newBlock = Instantiate(selectedBlock, snappedPosition, Quaternion.identity, blockParent);
-                placedBlocks.Add(newBlock);
-
-                // 設置するブロックの数が制限を超えた場合は古いものから消す
-                if (placedBlocks.Count > maxBlock)
+                placementPreview.transform.position = snappedPosition;
+                if (IsPositionInTilemap(snappedPosition))
                 {
-                    Destroy(placedBlocks[0]);
-                    placedBlocks.RemoveAt(0);
+                    placementPreview.SetActive(true); // 仮のブロックを表示
+                }
+                else
+                {
+                    placementPreview.SetActive(false); // 設置エリア外では非表示
+                }
+            }
+
+            // 選択したブロックを設置する
+            if (selectedBlock != null && Input.GetMouseButtonDown(0))
+            {
+                if (IsPositionInTilemap(snappedPosition) && CanPlaceBlock(snappedPosition))
+                {
+                    GameObject newBlock = Instantiate(selectedBlock, snappedPosition, Quaternion.identity, blockParent);
+                    placedBlocks.Add(newBlock);
+
+                    // 設置するブロックの数が制限を超えた場合は古いものから消す
+                    if (placedBlocks.Count > maxBlock) // 制限する数（例: 10個）
+                    {
+                        Destroy(placedBlocks[0]);
+                        placedBlocks.RemoveAt(0);
+                    }
+
+                    // 設置時の効果音を再生
+                    PlayPlacementSound();
                 }
             }
         }
@@ -123,6 +112,9 @@ public class BlockPlacement : MonoBehaviour
                 placementPreview.SetActive(false); // 初期状態では非表示
             }
         }
+
+        // ブロック選択時の効果音を再生
+        PlayBlockSelectSound();
     }
 
     // Tilemap内に位置があるかチェック
@@ -158,5 +150,23 @@ public class BlockPlacement : MonoBehaviour
             Destroy(block);
         }
         placedBlocks.Clear();
+    }
+
+    // 設置時の効果音を再生するメソッド
+    void PlayPlacementSound()
+    {
+        if (placementSound != null)
+        {
+            audioSource.PlayOneShot(placementSound);
+        }
+    }
+
+    // ブロック選択時の効果音を再生するメソッド
+    void PlayBlockSelectSound()
+    {
+        if (blockSelectSound != null)
+        {
+            audioSource.PlayOneShot(blockSelectSound);
+        }
     }
 }

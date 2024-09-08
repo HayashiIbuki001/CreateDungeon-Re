@@ -5,6 +5,10 @@ public class CheckpointManager : MonoBehaviour
     public BlockPlacement blockPlacement; // BlockPlacementスクリプトへの参照
     private Vector3 checkpointPosition; // 最後に設定されたチェックポイントの位置
 
+    // 効果音のAudioSourceとAudioClipを追加
+    public AudioSource audioSource; // AudioSourceコンポーネント
+    public AudioClip retrySound; // リトライ時の効果音
+
     void Start()
     {
         checkpointPosition = Vector3.zero; // 初期状態ではチェックポイントが設定されていない
@@ -46,6 +50,12 @@ public class CheckpointManager : MonoBehaviour
             if (blockPlacement != null)
             {
                 blockPlacement.ClearBlocks();
+            }
+
+            // 効果音を再生
+            if (audioSource != null && retrySound != null)
+            {
+                audioSource.PlayOneShot(retrySound);
             }
         }
     }
