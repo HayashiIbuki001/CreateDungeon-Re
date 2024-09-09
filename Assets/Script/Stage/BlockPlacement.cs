@@ -24,6 +24,8 @@ public class BlockPlacement : MonoBehaviour
     public AudioClip blockSelectSound; // ブロック選択時の効果音
     private AudioSource audioSource;  // AudioSourceコンポーネント
 
+    public Collider2D pauseButtonCollider; // ポーズボタンのコライダー
+
     void Start()
     {
         // UIのボタンにクリックイベントを追加
@@ -57,7 +59,13 @@ public class BlockPlacement : MonoBehaviour
             if (placementPreview != null && selectedBlock != null)
             {
                 placementPreview.transform.position = snappedPosition;
-                if (IsPositionInTilemap(snappedPosition))
+
+                // 仮ブロックがポーズボタンのコライダー内に入っているかチェック
+                if (IsMouseOverPauseButton(mousePos))
+                {
+                    placementPreview.SetActive(false); // ポーズボタン領域内では非表示
+                }
+                else if (IsPositionInTilemap(snappedPosition))
                 {
                     placementPreview.SetActive(true); // 仮のブロックを表示
                 }
@@ -122,6 +130,16 @@ public class BlockPlacement : MonoBehaviour
     {
         Vector3Int cellPosition = placementTilemap.WorldToCell(position);
         return placementTilemap.GetTile(cellPosition) != null;
+    }
+
+    // マウスがポーズボタンの領域にあるかどうかを判定
+    bool IsMouseOverPauseButton(Vector2 mousePosition)
+    {
+        // マウスの座標をワールドからスクリーンに変換
+        Vector2 screenPoint = Camera.main.WorldToScreenPoint(mousePosition);
+
+        // コライダーの領域を判定
+        return pauseButtonCollider.OverlapPoint(screenPoint);
     }
 
     // ブロックが置ける条件をチェックするメソッド

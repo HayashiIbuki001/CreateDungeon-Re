@@ -57,6 +57,9 @@ public class CheckpointManager : MonoBehaviour
             {
                 audioSource.PlayOneShot(retrySound);
             }
+
+            HiyokoMove hiyokomove = GetComponent<HiyokoMove>();
+            hiyokomove.teleported = true;
         }
     }
 }

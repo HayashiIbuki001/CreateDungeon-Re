@@ -10,6 +10,8 @@ public class HiyokoMove : MonoBehaviour
     public LayerMask obstacleLayer;  // 障害物として検知するレイヤー
     public bool canJump = true;
     public bool isJump = false;
+    public bool teleported;
+    public bool right;
 
     // 左右の方向を判定するための変数（右: 1、左: -1）
     int direction = 1;
@@ -22,10 +24,14 @@ public class HiyokoMove : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody2D>();
         lastPosition = transform.position;
+
+        right = true;
     }
 
     void Update()
     {
+        Teleported();
+
         // ひよこを常に移動させる
         _rb.velocity = new Vector2(speed * direction, _rb.velocity.y);
 
@@ -58,6 +64,8 @@ public class HiyokoMove : MonoBehaviour
             Vector3 scale = transform.localScale;
             scale.x *= -1;  // X軸を反転
             transform.localScale = scale;
+
+            right = !right;
         }
 
         // 前方に障害物があるかをチェック
@@ -86,5 +94,24 @@ public class HiyokoMove : MonoBehaviour
         direction = newDirection.x > 0 ? 1 : -1;
         // 速度も更新
         _rb.velocity = new Vector2(speed * direction, _rb.velocity.y);
+    }
+
+    public void Teleported()
+    {
+        if (teleported)
+        {
+            if (!right)
+            {
+                Vector3 scale = transform.localScale;
+                scale.x *= -1;  // X軸を反転
+                transform.localScale = scale;
+                direction *= -1;
+
+                teleported = false;
+                Debug.Log("てれぽーてっど");
+
+                right = true;
+            }
+        }
     }
 }
