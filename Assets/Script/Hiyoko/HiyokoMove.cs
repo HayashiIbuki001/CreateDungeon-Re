@@ -42,7 +42,7 @@ public class HiyokoMove : MonoBehaviour
         // 1秒以上動かない場合、方向を逆にする
         if (stuckTime >= 0.5f)
         {
-            //躓いてしまったらジャンプ
+            // 躓いてしまったらジャンプ
             if (canJump && !isJump)
             {
                 _rb.AddForce(Vector2.up * jumpForce / 2, ForceMode2D.Impulse);
@@ -72,5 +72,19 @@ public class HiyokoMove : MonoBehaviour
 
         // 現在の位置を保存
         lastPosition = transform.position;
+    }
+
+    public void Teleport(Vector3 newPosition)
+    {
+        transform.position = newPosition;
+        // テレポート後に右に歩くように方向を設定
+        SetTeleportDirection(Vector2.right); // 右方向に設定
+    }
+
+    public void SetTeleportDirection(Vector2 newDirection)
+    {
+        direction = newDirection.x > 0 ? 1 : -1;
+        // 速度も更新
+        _rb.velocity = new Vector2(speed * direction, _rb.velocity.y);
     }
 }

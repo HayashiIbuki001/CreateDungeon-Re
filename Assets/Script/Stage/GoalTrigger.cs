@@ -8,14 +8,10 @@ public class GoalTrigger : MonoBehaviour
     public float timeToReturnToTitle = 2f; // タイトルに戻るまでの待機時間
     public GameObject player; // プレイヤーオブジェクトの参照
     public Text stageClearText; // "Stage Clear!" メッセージ用の UI テキスト
-
-    // ゴール時の効果音のAudioSourceとAudioClipを追加
-    public AudioSource audioSource; // AudioSourceコンポーネント
-    public AudioClip goalSound; // ゴール時の効果音
-
-    // ゴール時のBGM用のAudioSourceとAudioClipを追加
-    public AudioSource bgmSource; // BGM用のAudioSource
-    public AudioClip goalBGM; // ゴール時のBGM
+    public AudioClip goalSound; // ゴール時に再生する効果音
+    public AudioClip goalSound2;
+    public AudioSource audioSource; // 効果音再生用の AudioSource
+    public AudioSource bgmAudioSource; // BGM再生用の AudioSource
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -28,18 +24,17 @@ public class GoalTrigger : MonoBehaviour
 
     private IEnumerator GoalReachedCoroutine()
     {
+        // BGMを停止
+        if (bgmAudioSource != null)
+        {
+            bgmAudioSource.Stop();
+        }
+
         // ゴール時の効果音を再生
         if (audioSource != null && goalSound != null)
         {
             audioSource.PlayOneShot(goalSound);
-        }
-
-        // ゴール時のBGMを再生
-        if (bgmSource != null && goalBGM != null)
-        {
-            bgmSource.Stop(); // 既存のBGMを停止
-            bgmSource.clip = goalBGM;
-            bgmSource.Play();
+            audioSource.PlayOneShot(goalSound2);
         }
 
         // "Stage Clear!" メッセージを表示する
