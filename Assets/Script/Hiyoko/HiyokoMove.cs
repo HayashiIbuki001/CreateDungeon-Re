@@ -20,6 +20,9 @@ public class HiyokoMove : MonoBehaviour
     Vector2 lastPosition;
     float stuckTime = 0.0f; // ひよこが動かない時間を追跡
 
+    // 一時停止のフラグ
+    private bool isPaused = false;
+
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -30,6 +33,18 @@ public class HiyokoMove : MonoBehaviour
 
     void Update()
     {
+        // Fキーで一時停止の切り替え
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            isPaused = !isPaused;
+        }
+
+        // 一時停止中は処理をスキップ
+        if (isPaused)
+        {
+            return;
+        }
+
         Teleported();
 
         // ひよこを常に移動させる

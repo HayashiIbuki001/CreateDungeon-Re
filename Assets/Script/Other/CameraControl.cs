@@ -27,19 +27,19 @@ public class CameraControl : MonoBehaviour
         Vector3 currentOffset = vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
 
         // 矢印キーが押されているかをチェック
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow ) || Input.GetKey(KeyCode.D))
         {
             // 右矢印キーが押されているとき
             Vector3 targetOffset = originalOffset + new Vector3(moveAmount, 0, 0);
             vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = Vector3.Lerp(currentOffset, targetOffset, Time.deltaTime * moveSpeed);
         }
-        else if (Input.GetKey(KeyCode.LeftArrow))
+        else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
         {
             // 左矢印キーが押されているとき
             Vector3 targetOffset = originalOffset - new Vector3(moveAmount, 0, 0);
             vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = Vector3.Lerp(currentOffset, targetOffset, Time.deltaTime * moveSpeed);
         }
-        else if (Input.GetKey(KeyCode.DownArrow))
+        else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
         {
             // 下矢印キーが押されているとき
             Vector3 targetOffset = originalOffset - new Vector3(0, moveAmount, 0);  // Y軸方向に下げる
