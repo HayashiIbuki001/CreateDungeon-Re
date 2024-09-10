@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
 
-public class GoalTrigger : MonoBehaviour
+public class GoalTrigger2 : MonoBehaviour
 {
     public float timeToReturnToTitle = 2f; // タイトルに戻るまでの待機時間
     public GameObject player; // プレイヤーオブジェクトの参照

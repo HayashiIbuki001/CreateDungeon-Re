@@ -32,6 +32,6 @@ public class BeamController : MonoBehaviour
         currentBeam.GetComponent<Rigidbody2D>().velocity = beamSpawnPoint.up * beamSpeed;
 
         // ˆê’è‹——£‚ğ’´‚¦‚½‚çƒr[ƒ€‚ğíœ
-        Destroy(currentBeam, maxBeamDistance / beamSpeed);
+        //Destroy(currentBeam, maxBeamDistance / beamSpeed);
     }
 }

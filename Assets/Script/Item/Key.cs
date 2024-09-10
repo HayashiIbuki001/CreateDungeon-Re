@@ -7,8 +7,14 @@ using TMPro;
 public class Key : MonoBehaviour
 {
     public GameObject door;
-    [SerializeField] Vector3 movePosition = new Vector3(0, 3.0f, 0);
+    private Vector3 pos;
+    public Vector3 door_pos;
+    [SerializeField] float movePositionY = 5.0f;
     [SerializeField] float duration = 3;
+    private bool getKey;
+
+    public AudioClip soundEffect;
+    private AudioSource audioSource;
 
     Vector3 targetPosition;
     // Start is called before the first frame update
@@ -16,24 +22,42 @@ public class Key : MonoBehaviour
     {
         Rigidbody rb = GetComponent<Rigidbody>();
 
-        Vector3 pos = door.transform.position;
-        targetPosition = new Vector3(pos.x + movePosition.x, pos.y + movePosition.y, pos.z + movePosition.z);
+        door_pos = door.transform.position;
+        pos = this.transform.position;
+        targetPosition = new Vector3(door_pos.x, door_pos.y - movePositionY, door_pos.z);
+
+        getKey = false;
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            this.transform.position = pos;
+            if (getKey) 
+            {
+                door.transform.DOMove( door_pos, 0.1f);
+
+                getKey = false;
+            }
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
-            Destroy(this.gameObject);
+            transform.position = new Vector3(door_pos.x + -100, door_pos.y - 100, door_pos.z - 100);
+            
             Debug.Log("Œ®Žæ‚Á‚½");
 
             door.transform.DOMove(targetPosition, duration);
+            audioSource.PlayOneShot(soundEffect);
+
+            getKey = true;
         }
     }
 }

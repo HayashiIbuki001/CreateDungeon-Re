@@ -14,7 +14,6 @@ public class StageSelectSceneController : MonoBehaviour
         audioSource = gameObject.AddComponent<AudioSource>();
     }
 
-    // ステージ選択画面からステージ1に移行する
     private void Update()
     {
         if (Input.GetKeyUp(KeyCode.Escape))
@@ -23,9 +22,14 @@ public class StageSelectSceneController : MonoBehaviour
         }
     }
 
-    public void PushedButton()
+    public void PushedButton1()
     {
         StartCoroutine(PlaySoundAndChangeScene("Stage 1"));
+    }
+
+    public void PushedButton2()
+    {
+        StartCoroutine(PlaySoundAndChangeScene("Stage 2"));
     }
 
     private IEnumerator PlaySoundAndChangeScene(string sceneName)
